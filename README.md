@@ -1,9 +1,9 @@
 # PII Risk & Hallucination Scoring
 
-![Python](https://img.shields.io/badge/Python-3.10.18-blue?logo=python&logoColor=white)
-![GLiNER](https://img.shields.io/badge/GLiNER-nvidia%2Fgliner--PII-green)
-![NumPy](https://img.shields.io/badge/NumPy-supported-lightgrey?logo=numpy)
-![CUDA](https://img.shields.io/badge/Device-CUDA%20%7C%20CPU-76B900?logo=nvidia&logoColor=white)
+[![Python](https://img.shields.io/badge/Python-3.10.18-blue?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-31018/)
+[![GLiNER](https://img.shields.io/badge/GLiNER-nvidia%2Fgliner--PII-green)](https://huggingface.co/nvidia/gliner-PII)
+[![NumPy](https://img.shields.io/badge/NumPy-supported-lightgrey?logo=numpy)](https://numpy.org)
+[![CUDA](https://img.shields.io/badge/Device-CUDA%20%7C%20CPU-76B900?logo=nvidia&logoColor=white)](https://developer.nvidia.com/cuda-toolkit)
 
 A lightweight pipeline for detecting personally identifiable information (PII) in text and computing a quantitative risk score, alongside a configurable hallucination scoring utility for RAG-based systems.
 
