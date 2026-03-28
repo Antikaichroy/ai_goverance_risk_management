@@ -1,5 +1,10 @@
 # PII Risk & Hallucination Scoring
 
+![Python](https://img.shields.io/badge/Python-3.10.18-blue?logo=python&logoColor=white)
+![GLiNER](https://img.shields.io/badge/GLiNER-nvidia%2Fgliner--PII-green)
+![NumPy](https://img.shields.io/badge/NumPy-supported-lightgrey?logo=numpy)
+![CUDA](https://img.shields.io/badge/Device-CUDA%20%7C%20CPU-76B900?logo=nvidia&logoColor=white)
+
 A lightweight pipeline for detecting personally identifiable information (PII) in text and computing a quantitative risk score, alongside a configurable hallucination scoring utility for RAG-based systems.
 
 ---
@@ -15,7 +20,7 @@ This module provides two independent scoring functions:
 
 ## Dependencies
 
-- Python 3.8+
+- Python 3.10.18
 - [`gliner`](https://github.com/urchade/GLiNER) — Named entity recognition model
 - `numpy`
 - A local module `sample_sentences` providing `pii_sentences` and `non_pii_sentences` for testing
