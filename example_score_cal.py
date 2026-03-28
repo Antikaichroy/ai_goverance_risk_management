@@ -41,7 +41,9 @@ def calculate_hallucination_score(context_accuracy:float =  None, faithfulness:f
     alpha_fa: the weight for faithfulness
     answer_relevance: the score for answer_relevance
     alpha_ar: weight for answer relevance
+    alpha_cafa: Weight for the interaction term (context accuracy x faithfulness)
 
+    Strict Note: The coefficients alpha_ca, alpha_fa, alpha_ar, alpha_cafa sum must = 1
     """
     hal_chance_ca = 1 - context_accuracy
     hal_chance_fa = 1 - faithfulness
