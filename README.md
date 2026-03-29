@@ -113,7 +113,7 @@ risk_score   = min(1.0, alpha * max_risk + (1 - alpha) * exposure)
 
 ### `calculate_hallucination_score(...)`
 
-Computes a weighted hallucination probability from three RAG quality metrics.
+Computes a composite hallucination score from three RAG quality metrics.
 
 **Parameters**
 
