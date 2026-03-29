@@ -93,8 +93,7 @@ sample_ca = [x/100 for x in random.choices(range(1,100), k=100)]
 results = []
 
 for CA, FA, AR in zip(sample_ca, sample_fa, sample_ar):
-    kwargs = dict(CA = CA, FA = FA, AR = AR)
-    hallucination_score = calculate_hallucination_score(**kwargs)
+    hallucination_score = calculate_hallucination_score(CA = CA, FA = FA, AR = AR)
     combination = {"context_accuracy": CA, "faithfulness": FA, "answer_relevance": AR}
     label = "hallucination" if hallucination_score>=0.5 else ("moderate hallucination" if hallucination_score>=0.25 else "low hallucination")
     results.append({"hallucination score":hallucination_score, "metrics": combination, "label": label})
