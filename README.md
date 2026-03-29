@@ -174,5 +174,5 @@ print(f"Hallucination Score: {hallucination}")
 ## Notes
 
 - The `alpha` parameter in `calculate_risk_score` controls the trade-off between peak severity and breadth of exposure. A value of `0.6` is a reasonable default, weighting worst-case entities more heavily.
-- alpha, beta, gamma in `calculate_hallucination_score` should sum to `1.0` for the score to remain within a consistent interpretable range.
+- alpha, beta, gamma in `calculate_hallucination_score` must sum to `1.0` for the score to remain within a consistent interpretable range.
 - The confidence threshold of `0.7` in `risk_class_val` filters out low-confidence entity predictions and can be adjusted based on the acceptable false-positive rate for a given application.
