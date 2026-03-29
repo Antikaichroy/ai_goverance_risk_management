@@ -119,21 +119,23 @@ Computes a weighted hallucination probability from three RAG quality metrics.
 
 | Parameter | Type | Description |
 |---|---|---|
-| `context_accuracy` | `float` | Score for context retrieval accuracy (0–1) |
-| `faithfulness` | `float` | Score for answer faithfulness to context (0–1) |
-| `answer_relevance` | `float` | Score for relevance of the answer to the query (0–1) |
-| `alpha_ca` | `float` | Weight for context accuracy |
-| `alpha_fa` | `float` | Weight for faithfulness |
-| `alpha_ar` | `float` | Weight for answer relevance |
-| `alpha_cafa` | `float` | Weight for the interaction term (context accuracy x faithfulness) |
+| `CA` | `float` | Score for context accuracy (0–1) |
+| `FA` | `float` | Score for answer faithfulness to context (0–1) |
+| `AR` | `float` | Score for relevance of the answer to the query (0–1) |
+| `alpha` | `float` | Sensitivity for context accuracy |
+| `beta` | `float` | Sensitivity for faithfulness |
+| `gamma` | `float` | Sensitivity for answer relevance |
+
+alpha + beta + gamma = 1
+
+alpha, beta, gamma:  Exponent-based sensitivities for CA, FA, and AR to manage their relative impact on the overall score. Increasing the exponent will make the score more sensitive to changes in that measure. 
 
 **Formula**
 
 ```
-hallucination_score = alpha_ca * (1 - context_accuracy)
-                    + alpha_fa * (1 - faithfulness)
-                    + alpha_ar * (1 - answer_relevance)
-                    + alpha_cafa * (1 - context_accuracy) * (1 - faithfulness)
+hallucination_score = (CA ** alpha) * (FA ** beta) * (AR ** gamma)
+H = round(1 - hallucination_score, 2)
+
 ```
 
 **Returns**
@@ -157,13 +159,12 @@ risk = calculate_risk_score(risk_values, alpha=0.6)
 print(f"PII Risk Score: {risk}")
 
 hallucination = calculate_hallucination_score(
-    context_accuracy=0.6,
-    faithfulness=0.2,
-    answer_relevance=0.4,
-    alpha_ca=0.4,
-    alpha_fa=0.4,
-    alpha_ar=0.1,
-    alpha_cafa=0.1
+    CA=0.6,
+    FA=0.2,
+    AR=0.4,
+    alpha=0.4,
+    beta=0.4,
+    gamma=0.2,
 )
 print(f"Hallucination Score: {hallucination}")
 ```
