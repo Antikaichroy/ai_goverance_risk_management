@@ -2,6 +2,8 @@ from typing import List, Dict
 from gliner import GLiNER
 import numpy as np
 from sample_sentences import pii_sentences, non_pii_sentences
+import random
+
 
 pii = pii_sentences
 no_pii = non_pii_sentences
@@ -33,24 +35,30 @@ def calculate_risk_score(risk_class_values = List[float], alpha = float) -> floa
     return round(risk_score,2)
 
 
-def calculate_hallucination_score(context_accuracy:float =  None, faithfulness:float = None, answer_relevance:float = None, alpha_ca:float = None, alpha_fa: float = None, alpha_ar: float = None, alpha_cafa: float = None) -> float: 
+def calculate_hallucination_score(CA: float, FA: float, AR: float,
+                                   alpha: float = 0.4,
+                                   beta: float = 0.4,
+                                   gamma: float = 0.2) -> float:
+    
     """
-    context_accuracy: the score for context_accuracy
-    alpha_ca: the weight for context_accuracy
-    faithfulness: the score for faithfulness 
-    alpha_fa: the weight for faithfulness
-    answer_relevance: the score for answer_relevance
-    alpha_ar: weight for answer relevance
-    alpha_cafa: Weight for the interaction term (context accuracy x faithfulness)
+    Useful for the calculation of the Hallucination Score. It is a composite measure of the AR, FA, CA
+    CA: Context Accuracy Score [0,1]
+    FA: Faithfulness Score [0,1]
+    AR: Answer Relevance Score [0,1]
 
-    Strict Note: The coefficients alpha_ca, alpha_fa, alpha_ar, alpha_cafa sum must = 1
+    alpha: Sensitivity for CA
+    beta: Sensitivity for FA
+    gamma: Sensitivity for AR
+    
+    alpha + beta + gamma = 1 (Must)
+
     """
-    hal_chance_ca = 1 - context_accuracy
-    hal_chance_fa = 1 - faithfulness
-    hal_chance_ar = 1 - answer_relevance
-
-    hallucination_score = alpha_ca*hal_chance_ca + alpha_fa*hal_chance_fa + alpha_ar*hal_chance_ar + alpha_cafa*hal_chance_ca*hal_chance_fa
-    return round(hallucination_score, 2)
+    
+    assert round(alpha + beta + gamma, 6) == 1.0, "Weights must sum to 1"
+    assert all(0 <= v <= 1 for v in [CA, FA, AR]), "Scores must be in [0, 1]"
+    
+    trust = (CA ** alpha) * (FA ** beta) * (AR ** gamma)
+    return round(1 - trust, 2)
 
 res = extractor.predict_entities(pii[3], labels = labels)
 
@@ -72,6 +80,23 @@ def risk_class_val(res:List[Dict] = None) -> List[float]:
     
     return list(seen.values())
 
-kwrgs = dict(context_accuracy=0.6, faithfulness=0.2, answer_relevance=0.4, alpha_ca = 0.4, alpha_fa = 0.4, alpha_ar = 0.1, alpha_cafa = 0.1) # for hallucination scoring
+kwargs = dict(CA=0.6, FA=0.4, AR = 0.4) # for hallucination scoring
 
 print(calculate_risk_score(risk_class_val(res), 0.6))
+
+
+# sample hallucination testing
+
+sample_ar = [x/100 for x in random.choices(range(1,100), k=100)]
+sample_fa = [x/100 for x in random.choices(range(1,100), k=100)]
+sample_ca = [x/100 for x in random.choices(range(1,100), k=100)]
+results = []
+
+for CA, FA, AR in zip(sample_ca, sample_fa, sample_ar):
+    kwargs = dict(CA = CA, FA = FA, AR = AR)
+    hallucination_score = calculate_hallucination_score(**kwargs)
+    combination = {"context_accuracy": CA, "faithfulness": FA, "answer_relevance": AR}
+    label = "hallucination" if hallucination_score>=0.5 else ("moderate hallucination" if hallucination_score>=0.25 else "no hallucination")
+    results.append({"hallucination score":hallucination_score, "metrics": combination, "label": label})
+
+print(results)
